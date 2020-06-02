@@ -87,7 +87,7 @@ export class Sheets extends React.Component{
               </li>)
           })
         }
-        <li className="tab-item" key="create-table" onClick={this.onOpenCreateTableModal}>建表</li>
+        <li className="tab-item" key="create-table" onClick={this.onOpenCreateTableModal}>+ 建表</li>
       </ul>
     )
   }
@@ -103,8 +103,8 @@ export class Sheets extends React.Component{
       <div className="sheets">
         { this.renderTabs() }
         { this.renderTable() }
-        <CreateTableModal />
-        <RenameTableModal name={activedTable.tableName} />
+        <CreateTableModal title="建表"/>
+        <RenameTableModal title="修改表名" name={activedTable.tableName} />
       </div>
     )
   }

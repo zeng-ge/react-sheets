@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Modal } from 'antd'
+import { trim } from 'lodash'
 import actions from '../../../../actions'
 import './index.scss'
 
@@ -18,6 +19,9 @@ export class CreateTableModal extends React.Component{
   onOk = () => {
     const { confirmAction, toggleModal, tableId } = this.props
     const name = this.inputRef.value
+    if(trim(name).length ===0) {
+      return;
+    }
     if(tableId) {
       confirmAction(tableId, name)
     } else {
@@ -59,7 +63,7 @@ export class CreateTableModal extends React.Component{
 
 const mapStateToProps = state => ({ 
   visible: state.sheets.createTableModalVisibility,
-  title: '建表'
+  
 })
 const mapDispatchToProps = {
   toggleModal: actions.toggleCreateTableModal,

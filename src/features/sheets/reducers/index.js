@@ -28,9 +28,9 @@ export default createReducer({
     state.tables.splice(tableIndex, 1, {...table});
     return {...state, tables: [...state.tables] }
   },
-  createRow(state, { tableId, currentRow, row }) {
+  createRow(state, { tableId, nextRowIndex, row }) {
     const table = find(state.tables, item => item.tableId === tableId)
-    table.rows.splice(currentRow + 1, 0, row)
+    table.rows.splice(nextRowIndex, 0, row)
     const tableIndex = findIndex(state.tables, item => item.tableId === tableId)
     state.tables.splice(tableIndex, 1, {...table, rows: [...table.rows]});
     return {...state, tables: [...state.tables] }

@@ -7,7 +7,7 @@ export default [
       { id: 'column-1', name: '体温', type: 'text', primary: true, width: 60 },
       { id: 'column-2', name: '日期', type: 'text', width: 200 },
       { id: 'column-3', name: '班级', type: 'radio', options: [
-        {value: 1, name: '三年级一班'},
+        {value: 1, name: '三年级一班', isDefault: true},
         {value: 2, name: '三年级二班'}
       ], width: 200 },
       { id: 'column-4', name: '学生', type: 'text', width: 100 },

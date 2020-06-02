@@ -1,9 +1,9 @@
-import { find, findIndex, forEach } from 'lodash'
+import { find, findIndex, forEach, cloneDeep } from 'lodash'
 import {tableId, columnId, rowId} from '../../../utils/uuid'
 import tables from '../../../db'
 
 export const loadTables = () => {
-  return [...tables]
+  return cloneDeep(tables)
 }
 
 export const createTable = name => {
@@ -31,12 +31,12 @@ export const renameTable = (tableId, name) => {
   return table;
 }
 
-export const createRow = ({tableId, currentRow}) => {
+export const createRow = (tableId, nextRowIndex) => {
   const table = find(tables, item => item.tableId === tableId)
   const row = {
     id: rowId()
   };
-  table.rows.splice(currentRow + 1, 0, row)
+  table.rows.splice(nextRowIndex, 0, row)
   return row;
 }
 

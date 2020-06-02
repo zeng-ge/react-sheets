@@ -17,8 +17,8 @@ export default createActions({
   removeTable: tableId => ({tableId, removed: removeTable(tableId)}),
   renameTable: (tableId, name) => ({tableId, name, table: renameTable(tableId, name)}),
   
-  createRow: (tableId, currentRow) => ({tableId, currentRow, row: createRow(tableId, currentRow)}),
-  deleteRow: (tableId, rowId) => ({deleted: deleteRow(tableId, rowId)}),
+  createRow: (tableId, nextRowIndex) => ({tableId, nextRowIndex, row: createRow(tableId, nextRowIndex)}),
+  deleteRow: (tableId, rowId) => ({tableId, rowId, deleted: deleteRow(tableId, rowId)}),
   
   addField: (tableId, field) => ({field: addField(tableId, field)}),
   removeField: (tableId, fieldId)=> ({removed: removeField(tableId, fieldId)}),

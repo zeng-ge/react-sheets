@@ -4,8 +4,7 @@ import { CreateTableModal } from '../CreateTable'
 
 const mapStateToProps = state => ({ 
   visible: state.sheets.renameTableModalVisibility,
-  tableId: state.sheets.activeTableId,
-  title: '修改表名'
+  tableId: state.sheets.activeTableId
 })
 const mapDispatchToProps = {
   toggleModal: actions.toggleRenameTableModal,
