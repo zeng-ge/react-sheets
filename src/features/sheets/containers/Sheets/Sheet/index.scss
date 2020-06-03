@@ -1,6 +1,8 @@
 @import '../../../../../styles/variables.scss';
 
+$borderColor: #c1c1c1;
 .sheet-wrapper{
+  height: calc(100% - 30px);
   .sheet-header{
     background-color: #ddd;
     white-space: nowrap;
@@ -8,6 +10,14 @@
     .sheet-header-field{
       height: 30px;
       display: inline-block;
+      
+      border-top: 1px solid $borderColor;
+      border-bottom: 1px solid $borderColor;
+      border-right: 1px solid $borderColor;
+      &:first-child{
+        border-left: 1px solid $borderColor;
+      }
+
       line-height: 30px;
       text-align: center;
 
@@ -21,15 +31,24 @@
   
 
   .sheet-body{
+    height: calc(100% - 30px);
+    overflow: auto;
     .sheet-no{
 
     }
     .sheet-rows{
       .sheet-row{
-        height: 32px;
+        height: 34px;
+        white-space: nowrap;
         .cell-container{
           height: 100%;
           line-height: 32px;
+          border-right: 1px solid $borderColor;
+          border-bottom: 1px solid $borderColor;
+          cursor: pointer;
+          &:first-child {
+            border-left: 1px solid $borderColor;
+          }
         }
       }
     }

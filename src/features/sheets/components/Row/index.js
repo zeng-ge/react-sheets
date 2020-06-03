@@ -5,9 +5,9 @@ import Cell from '../Cell'
 
 export default class Row extends React.Component{
   renderWithoutMenu(){
-    const {tableId, fields, values, className} = this.props;
+    const {tableId, fields, values, className, width} = this.props;
     return (
-      <ul className={className} onMouseUp={event => event.stopPropagation()}>
+      <ul style={{width}} className={className} onMouseUp={event => event.stopPropagation()}>
         {
           map(fields, field => {
             const value = values[field.id]

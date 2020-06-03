@@ -127,6 +127,7 @@ export class Sheet extends React.Component{
           fields={fields} 
           values={row}
           tableId={tableId}
+          width={this.calculateWidth()}
           menu={this.getRowMenu(row.id, index)} />
       )
     })
@@ -138,7 +139,7 @@ export class Sheet extends React.Component{
     return (
       <div className="sheet-wrapper">
         { this.renderHeader() }
-        <div className="sheet-body" style={{width: this.calculateWidth()}}>
+        <div className="sheet-body" >
           <div className="sheet-no"></div>
           <div className="sheet-rows">
             { this.renderRows() }

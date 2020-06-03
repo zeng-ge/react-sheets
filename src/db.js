@@ -1,4 +1,17 @@
+import { map, times } from 'lodash'
 // fake data
+const generateRow = count => {
+  return map(times(100), index => {
+    return {
+      id: `row-${index}`, 
+      "column-1": '36.2', 
+      "column-2": '2020-03-01',
+      "column-3": 1, 
+      "column-4": '张三',
+      "column-5": '13612345671'
+    }
+  })
+}
 export default [
   {
     tableId: 'table-1',
@@ -13,12 +26,6 @@ export default [
       { id: 'column-4', name: '学生', type: 'TEXT', width: 100 },
       { id: 'column-5', name: '家长电话', type: 'TEXT', width: 150 }
     ],
-    rows: [
-      {id: 'row-1', "column-1": '36.2', "column-2": '2020-03-01', "column-3": 1, "column-4": '张三', "column-5": '13612345671'},
-      {id: 'row-2', "column-1": '36.3', "column-2": '2020-03-01', "column-3": 2, "column-4": '张三', "column-5": '13612345672'},
-      {id: 'row-3', "column-1": '36.4', "column-2": '2020-03-01', "column-3": 1, "column-4": '张三', "column-5": '13612345671'},
-      {id: 'row-4', "column-1": '36.5', "column-2": '2020-03-02', "column-3": 1, "column-4": '张三', "column-5": '13612345671'},
-      {id: 'row-5', "column-1": '36.6', "column-2": '2020-03-03', "column-3": 1, "column-4": '张三', "column-5": '13612345671'}
-    ]
+    rows: generateRow(100)
   }
 ];

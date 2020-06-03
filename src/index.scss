@@ -5,8 +5,9 @@ html, body, #root{
   height: 100%;
 }
 #root{
-  padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
+  padding: 20px;
 }
 body, ul, li{
   margin: 0;
