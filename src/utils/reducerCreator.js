@@ -1,18 +1,13 @@
 /***
  * 
  * const initialState = {
-    relationships: [],
-    remarks: [],
+    actionA: {}
   }
  * const actonHandlers = {
-    relationships(state, payload) {
-      return {...state, relationships: payload.relationships}
-    },
-    remarks(state, payload) {
-      return {..state, remarks: payload.remarks}
-    },
+    actionA(state, {user}) {
+      return {...state, user: user}
+    }
   }
-
   export default createReducer(actonHandlers, initialState)
  */
 export function createReducer(handlers, initialState) {

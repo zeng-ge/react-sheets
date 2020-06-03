@@ -6,11 +6,11 @@ export default class Radio extends React.Component{
     const { field: { options }, value } = this.props
     let option = find(options, item => item.value === value);
     if(!option) {
-      option = find(options, option => option.isDefault)
+      option = find(options, option => option.default)
     }
     return (
       <>
-        <span>{option.name}</span>
+        <span>{option && option.name}</span>
       </>
     )
   }

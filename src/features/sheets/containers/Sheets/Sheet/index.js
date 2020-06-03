@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { map, reduce } from 'lodash'
 import { Menu, Dropdown } from 'antd';
-import { CaretDownOutlined } from '@ant-design/icons'
-import Row from '../../../../../components/Row'
+import { CaretDownOutlined, KeyOutlined } from '@ant-design/icons'
+import Row from '../../../components/Row'
+import AddFieldModal from '../../../containers/Sheets/modals/AddField'
 import actions from '../../../actions'
 import './index.scss'
 
@@ -27,16 +28,20 @@ export class Sheet extends React.Component{
     deleteRowAction(table.tableId, rowId)
   }
 
-  onAddField = field => () => {
-
+  onShowAddFieldModal = (field, index) => () => {
+    const { toggleAddFieldModalAction } = this.props
+    const fieldIndex = index + 1;
+    toggleAddFieldModalAction(fieldIndex)
   }
 
   onRemoveField = field => () => {
-
+    const { table: { tableId }, removeFieldAction } = this.props
+    removeFieldAction(tableId, field.id)
   }
 
   onPrivaryKey = field => () => {
-
+    const { table: { tableId }, setFieldPrimaryAction } = this.props
+    setFieldPrimaryAction(tableId, field.id)
   }
 
   onSelectField = field => () => {
@@ -56,10 +61,10 @@ export class Sheet extends React.Component{
     )
   }
 
-  getFieldMenu(field) {
+  getFieldMenu(field, index) {
     return (
       <Menu>
-        <Menu.Item onClick={this.onAddField(field)}>
+        <Menu.Item onClick={this.onShowAddFieldModal(field, index)}>
           <span>新增字段</span>
         </Menu.Item>
         <Menu.Item onClick={this.onRemoveField(field)}>
@@ -75,10 +80,10 @@ export class Sheet extends React.Component{
     )
   }
 
-  renderFieldMenu(field){
+  renderFieldMenu(field, index){
     return (
       <Dropdown 
-        overlay={this.getFieldMenu(field)} 
+        overlay={this.getFieldMenu(field, index)} 
         placement="bottomCenter" trigger="click">
           <CaretDownOutlined onClick={event => event.stopPropagation()}/>
       </Dropdown>
@@ -89,14 +94,15 @@ export class Sheet extends React.Component{
     const { table: {fields = []} = {} } = this.props;
     return (
       <ul className="sheet-header" style={{width: this.calculateWidth()}}>
-        { map(fields, field => {
+        { map(fields, (field, index) => {
           return (
             <li
               className="sheet-header-field" 
               style={{width: field.width}}
               key={field.id}>
+                { field.primary && <KeyOutlined />}
                 { field.name }
-                { this.renderFieldMenu(field) }
+                { this.renderFieldMenu(field, index) }
             </li>)
         })}
       </ul>
@@ -128,6 +134,7 @@ export class Sheet extends React.Component{
             { this.renderRows() }
           </div>
         </div>
+        <AddFieldModal />
       </div>
     )
   }
@@ -135,6 +142,11 @@ export class Sheet extends React.Component{
 const mapStateToProps = state => ({})
 const mapDispatchToProps = {
   addRowAction: actions.createRow,
-  deleteRowAction: actions.deleteRow
+  deleteRowAction: actions.deleteRow,
+
+  addFieldAction: actions.addField,
+  removeFieldAction: actions.removeField,
+  setFieldPrimaryAction: actions.setFieldPrimary,
+  toggleAddFieldModalAction: actions.toggleAddFieldModal
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sheet)

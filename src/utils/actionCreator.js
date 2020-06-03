@@ -12,14 +12,14 @@ import _ from 'lodash'
 
 const createAction = function(type, action) {
   const actionProxy = function(...args) {
-    let state = _.isFunction(action) ? action.apply(null, args) : {}
-    if (!state) {
-      state = {}
+    let payload = _.isFunction(action) ? action.apply(null, args) : {}
+    if (!payload) {
+      payload = {}
     }
-    if (_.isError(state)) {
-      state = { error: true }
+    if (_.isError(payload)) {
+      payload = { error: true }
     }
-    return { type, payload: state, async: state.async }
+    return { type, payload }
   }
   actionProxy.toString = () => type
   return actionProxy
@@ -27,8 +27,8 @@ const createAction = function(type, action) {
 
 /***
  * createActions({
-    fetchCustomerTags: () => ({}),
-    fetchCustomizedTags: () => ({})
+    actionA: () => ({}),
+    actionB: user => ({user})
   }
  */
 export function createActions(actionMap) {

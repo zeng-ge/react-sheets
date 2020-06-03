@@ -1,9 +1,9 @@
 import React from 'react'
-import Text from '../form/Text'
-import Radio from '../form/Radio'
+import Text from '../../../../components/form/Text'
+import Radio from '../../../../components/form/Radio'
 import { upperCase } from 'lodash'
 
-import { typesMap } from '../../constants/cells'
+import { typesMap } from '../../../../constants/cells'
 import './index.scss'
 
 const formFieldMap = {

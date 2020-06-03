@@ -7,7 +7,8 @@ import {
   createRow,
   deleteRow,
   addField,
-  removeField
+  removeField,
+  setFieldPrimary
 } from '../services'
 
 export default createActions({
@@ -20,13 +21,15 @@ export default createActions({
   createRow: (tableId, nextRowIndex) => ({tableId, nextRowIndex, row: createRow(tableId, nextRowIndex)}),
   deleteRow: (tableId, rowId) => ({tableId, rowId, deleted: deleteRow(tableId, rowId)}),
   
-  addField: (tableId, field) => ({field: addField(tableId, field)}),
-  removeField: (tableId, fieldId)=> ({removed: removeField(tableId, fieldId)}),
+  addField: (tableId, fieldOptions, fieldIndex) => ({tableId, fieldOptions, fieldIndex, field: addField(tableId, fieldOptions, fieldIndex)}),
+  removeField: (tableId, fieldId) => ({tableId, fieldId, removed: removeField(tableId, fieldId)}),
+  setFieldPrimary: (tableId, fieldId) => ({ tableId, fieldId, updated: setFieldPrimary(tableId, fieldId)}),
 
   activeTable: tableId =>{
     return {tableId};
   },
 
   toggleCreateTableModal: () => ({}),
-  toggleRenameTableModal: () => ({})
+  toggleRenameTableModal: () => ({}),
+  toggleAddFieldModal: fieldIndex => ({ fieldIndex })
 })

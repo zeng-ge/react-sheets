@@ -1,3 +1,5 @@
+@import '../../../../../styles/variables.scss';
+
 .sheet-wrapper{
   .sheet-header{
     background-color: #ddd;
@@ -8,6 +10,12 @@
       display: inline-block;
       line-height: 30px;
       text-align: center;
+
+      .anticon-key{
+        transform: rotateZ(135deg);
+        font-size: 12px;
+        color: $black;
+      }
     }
   }
   
