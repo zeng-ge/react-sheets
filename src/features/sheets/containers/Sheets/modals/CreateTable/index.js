@@ -10,7 +10,7 @@ export class CreateTableModal extends React.Component{
   constructor(props){
     super(props)  
     this.inputRef = React.createRef()
-    this.state = { primaryFieldId: null }
+    this.state = { primaryFieldId: undefined }
   }
 
   onChangeField = fieldId => {
