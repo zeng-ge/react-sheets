@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { some, map, reduce } from 'lodash'
+import classnames from 'classnames'
 import { Menu, Dropdown } from 'antd';
 import { CaretDownOutlined, KeyOutlined } from '@ant-design/icons'
 import Row from '../../../components/Row'
@@ -66,10 +67,7 @@ export class Sheet extends React.Component{
     )
   }
 
-  getFieldMenu(field, index) {
-    const { table: { tableId }, selectedFields } = this.props
-    const isSelectedMenu = some(selectedFields, 
-      item => item.tableId === tableId && item.fieldId === field.id)
+  getFieldMenu(field, index, selected) {
     return (
       <Menu>
         <Menu.Item onClick={this.onShowAddFieldModal(field, index)}>
@@ -81,17 +79,17 @@ export class Sheet extends React.Component{
         <Menu.Item onClick={this.onPrivaryKey(field)}>
           <span>设置为主字段</span>
         </Menu.Item>
-        <Menu.Item onClick={this.onSelectField(field, isSelectedMenu)}>
-          <span>{isSelectedMenu ? '取消选中' : '选中'}</span>
+        <Menu.Item onClick={this.onSelectField(field, selected)}>
+          <span>{selected ? '取消选中' : '选中'}</span>
         </Menu.Item>
       </Menu>
     )
   }
 
-  renderFieldMenu(field, index){
+  renderFieldMenu(field, index, selected){
     return (
       <Dropdown 
-        overlay={this.getFieldMenu(field, index)} 
+        overlay={this.getFieldMenu(field, index, selected)} 
         placement="bottomCenter" trigger="click">
           <CaretDownOutlined onClick={event => event.stopPropagation()}/>
       </Dropdown>
@@ -99,18 +97,20 @@ export class Sheet extends React.Component{
   }
 
   renderHeader() {
-    const { table: {fields = []} = {} } = this.props;
+    const { table: {fields = [], tableId} = {}, selectedFields} = this.props;
     return (
       <ul className="sheet-header" style={{width: this.calculateWidth()}}>
         { map(fields, (field, index) => {
+          const isSelected = some(selectedFields, 
+            item => item.tableId === tableId && item.fieldId === field.id)
           return (
             <li
-              className="sheet-header-field" 
+              className={classnames('sheet-header-field', { 'selected-field': isSelected})} 
               style={{width: field.width}}
               key={field.id}>
                 { field.primary && <KeyOutlined />}
                 { field.name }
-                { this.renderFieldMenu(field, index) }
+                { this.renderFieldMenu(field, index, isSelected) }
             </li>)
         })}
       </ul>

@@ -14,12 +14,16 @@ $borderColor: #c1c1c1;
       border-top: 1px solid $borderColor;
       border-bottom: 1px solid $borderColor;
       border-right: 1px solid $borderColor;
+      line-height: 30px;
+      text-align: center;
+
       &:first-child{
         border-left: 1px solid $borderColor;
       }
 
-      line-height: 30px;
-      text-align: center;
+      &.selected-field{
+        background-color: #c1c1c1;
+      }
 
       .anticon-key{
         transform: rotateZ(135deg);
@@ -48,6 +52,10 @@ $borderColor: #c1c1c1;
           cursor: pointer;
           &:first-child {
             border-left: 1px solid $borderColor;
+          }
+
+          &.selected-field{
+            background-color: #c1c1c1;
           }
         }
       }

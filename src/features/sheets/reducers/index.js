@@ -122,15 +122,16 @@ export default createReducer({
 
   selectField(state, {tableId, fieldId}) {
     const item = {tableId, fieldId}
-    state.selectedFields.push(item)
-    return { ...state, selectedFields: [...state.selectedFields]}
+    const selectedFields = [...state.selectedFields, item]
+    return { ...state, selectedFields}
   },
 
   deselectField(state, {tableId, fieldId}) {
     const index = findIndex(state.selectedFields, 
       item => item.tableId === tableId && item.fieldId === fieldId)
-    state.selectedFields.splice(index, 1)
-    return { ...state, selectedFields: [...state.selectedFields]}
+    const selectedFields = [...state.selectedFields]
+    selectedFields.splice(index, 1)
+    return { ...state, selectedFields}
   },
 
   resetSelectField(state){

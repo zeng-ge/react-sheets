@@ -4,6 +4,16 @@ import { Dropdown } from 'antd';
 import Cell from '../Cell'
 
 export default class Row extends React.Component{
+
+  shouldComponentUpdate(nextProps) {
+    const { tableId, fields, values, className, width} = this.props
+    return tableId !== nextProps.tableId
+        || fields !== nextProps.fields
+        || values !== nextProps.values
+        || className !== nextProps.className
+        || width !== nextProps.width
+  }
+
   renderWithoutMenu(){
     const {tableId, fields, values, className, width} = this.props;
     return (

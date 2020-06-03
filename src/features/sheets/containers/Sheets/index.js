@@ -13,15 +13,19 @@ import './index.scss'
 
 export class Sheets extends React.Component{
 
+  clearEditCell = () => {
+    const { setEditCell } = this.props
+    setEditCell()
+  }
+
   componentDidMount(){
-    const { loadTables, setEditCell: clearEditCell } = this.props
+    const { loadTables } = this.props
     loadTables()
-    window.addEventListener('mouseup', clearEditCell)
+    window.addEventListener('mouseup', this.clearEditCell)
   }
 
   componentWillUnmount() {
-    const { setEditCell: clearEditCell } = this.props
-    window.removeEventListener('mouseup', clearEditCell)
+    window.removeEventListener('mouseup', this.clearEditCell)
   }
 
   onSelectTab = tableId => () => {
