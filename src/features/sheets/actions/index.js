@@ -20,6 +20,7 @@ export default createActions({
   
   createRow: (tableId, nextRowIndex) => ({tableId, nextRowIndex, row: createRow(tableId, nextRowIndex)}),
   deleteRow: (tableId, rowId) => ({tableId, rowId, deleted: deleteRow(tableId, rowId)}),
+  updateRowCell: (tableId, rowId, fieldId, value) => ({tableId, rowId, fieldId, value}),
   
   addField: (tableId, fieldOptions, fieldIndex) => ({tableId, fieldOptions, fieldIndex, field: addField(tableId, fieldOptions, fieldIndex)}),
   removeField: (tableId, fieldId) => ({tableId, fieldId, removed: removeField(tableId, fieldId)}),
@@ -34,5 +35,7 @@ export default createActions({
 
   toggleCreateTableModal: () => ({}),
   toggleRenameTableModal: () => ({}),
-  toggleAddFieldModal: fieldIndex => ({ fieldIndex })
+  toggleAddFieldModal: fieldIndex => ({ fieldIndex }),
+
+  setEditCell: (tableId, rowId, fieldId) => ({tableId, rowId, fieldId})
 })

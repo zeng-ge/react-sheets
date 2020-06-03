@@ -118,14 +118,15 @@ export class Sheet extends React.Component{
   }
   
   renderRows() {
-    const { table: { fields=[], rows =[]} = {} } = this.props;
+    const { table: { tableId, fields=[], rows =[]} = {} } = this.props;
     return map(rows, (row, index) => {
       return (
         <Row 
           className="sheet-row" 
           key={row.id} 
           fields={fields} 
-          values={row} 
+          values={row}
+          tableId={tableId}
           menu={this.getRowMenu(row.id, index)} />
       )
     })

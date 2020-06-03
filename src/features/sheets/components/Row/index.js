@@ -5,13 +5,13 @@ import Cell from '../Cell'
 
 export default class Row extends React.Component{
   renderWithoutMenu(){
-    const {fields, values, className} = this.props;
+    const {tableId, fields, values, className} = this.props;
     return (
-      <ul className={className}>
+      <ul className={className} onMouseUp={event => event.stopPropagation()}>
         {
           map(fields, field => {
             const value = values[field.id]
-            return <Cell key={field.id} field={field} value={value} />
+            return <Cell key={field.id} field={field} tableId={tableId} rowId={values.id} value={value} />
           })
         }
       </ul>

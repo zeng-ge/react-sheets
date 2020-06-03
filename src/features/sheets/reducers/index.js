@@ -11,7 +11,9 @@ const defaultState = {
 
   addFieldIndex: -1,
 
-  selectedFields: []
+  selectedFields: [],
+
+  editCell: null
 }
 
 const getTableIndexById = (state, tableId) => {
@@ -51,7 +53,7 @@ export default createReducer({
       state.tables.splice(sourceTableIndex, 1, cloneDeep(sourceTable))
     }
     
-    return {...state, tables: [...state.tables, table], activeTableId: table.tableId}
+    return {...state, tables: [...state.tables, cloneDeep(table)], activeTableId: table.tableId}
   },
 
   removeTable(state, { tableId }) {
@@ -83,6 +85,16 @@ export default createReducer({
     
     return getChangedRowsState(state, tableIndex)
   },
+  updateRowCell(state, {tableId, rowId, fieldId, value}){
+    const { table, tableIndex } = getTableAndIndexById(state, tableId)
+
+    const rowIndex = findIndex(table.rows, row => row.id === rowId)
+    const row = table.rows[rowIndex]
+
+    table.rows.splice(rowIndex, 1, {...row, [fieldId]: value})
+
+    return getChangedRowsState(state, tableIndex)
+  },
 
   addField(state, {tableId, field, fieldIndex}) {
     const { table, tableIndex } = getTableAndIndexById(state, tableId)
@@ -96,13 +108,14 @@ export default createReducer({
     const { table, tableIndex } = getTableAndIndexById(state, tableId)
 
     const fieldIndex = findIndex(table.fields, item => item.id === fieldId)
+    const field = table.fields[fieldIndex]
     table.fields.splice(fieldIndex, 1)
     forEach(table.rows, row => {
       delete row[fieldId]
     })
     
     const selectedFields = filter(state.selectedFields, 
-      item => item.tableId !== tableId && item.fieldId === fieldIndex)
+      item => item.tableId !== tableId || item.fieldId !== field.id)
     
     return { ...getChangedFieldsState(state, tableIndex), selectedFields}
   },
@@ -154,5 +167,10 @@ export default createReducer({
   toggleAddFieldModal(state, { fieldIndex }) {
     const visible = !state.addFieldModalVisibility;
     return { ...state, addFieldModalVisibility: visible, addFieldIndex: visible ? fieldIndex : -1 }
+  },
+
+  setEditCell(state, {tableId, rowId, fieldId} = {}){
+    const editCell = tableId ? { tableId, rowId, fieldId } : null
+    return {...state, editCell}
   }
 }, defaultState)

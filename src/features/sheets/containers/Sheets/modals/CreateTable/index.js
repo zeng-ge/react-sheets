@@ -56,7 +56,7 @@ export class CreateTableModal extends React.Component{
     return selectedFields && selectedFields.length > 0 && (
       <div className="form-control">
         <label className="field-label">主字段</label>
-        <Select value={primaryFieldId} onChange={this.onChangeField} placeholder="请选择">
+        <Select value={primaryFieldId} onChange={this.onChangeField} placeholder="请选择字段名">
           {
             selectedFields.map(item => {
               return (<Option key={item.id} value={item.id}>{item.name}</Option>)

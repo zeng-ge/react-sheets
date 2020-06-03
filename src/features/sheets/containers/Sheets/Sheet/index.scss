@@ -25,7 +25,13 @@
 
     }
     .sheet-rows{
-
+      .sheet-row{
+        height: 32px;
+        .cell-container{
+          height: 100%;
+          line-height: 32px;
+        }
+      }
     }
   }
 }

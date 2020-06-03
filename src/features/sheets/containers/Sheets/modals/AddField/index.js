@@ -110,7 +110,7 @@ export class CreateTableModal extends React.Component{
         onOk={this.onOk}
         >
           <div className="form-control">
-            <label className="field-label">字段名 </label>
+            <label className="field-label">字段名</label>
             <input className="field-input" ref={this.inputRef}/>
           </div>
           <div className="form-control">
