@@ -4,7 +4,6 @@ import { Modal, Select } from 'antd'
 import { find, map, uniqueId,trim } from 'lodash'
 import actions from '../../../../actions'
 import { types, typesMap } from '../../../../../../constants/cells'
-import './index.scss'
 
 const Option = Select.Option
 export class CreateTableModal extends React.Component{
@@ -100,7 +99,7 @@ export class CreateTableModal extends React.Component{
 
   render() {
     const { visible } = this.props;
-    return visible && (
+    return (
       <Modal
         wrapClassName="add-field-modal"
         visible={visible} 

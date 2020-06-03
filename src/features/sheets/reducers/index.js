@@ -1,5 +1,6 @@
-import { findIndex, forEach } from 'lodash'
+import { cloneDeep, findIndex, filter, forEach } from 'lodash'
 import { createReducer } from '../../../utils/reducerCreator'
+import { mergeFieldsForReferenceTable } from '../services'
 
 const defaultState = {
   tables: [],
@@ -8,7 +9,9 @@ const defaultState = {
   renameTableModalVisibility: false,
   addFieldModalVisibility: false,
 
-  addFieldIndex: -1
+  addFieldIndex: -1,
+
+  selectedFields: []
 }
 
 const getTableIndexById = (state, tableId) => {
@@ -39,7 +42,15 @@ export default createReducer({
     return {...state, tables, activeTableId: firstTable && firstTable.tableId }
   },
 
-  createTable(state, {table}) {
+  createTable(state, {options, table}) {
+    const { fields, sourceTableId } = options
+    const isCreateReferenceTable = fields && fields.length > 0
+    if(isCreateReferenceTable) {
+      const sourceTable = mergeFieldsForReferenceTable(table.tableId, options)
+      const sourceTableIndex = getTableIndexById(state, sourceTableId)
+      state.tables.splice(sourceTableIndex, 1, cloneDeep(sourceTable))
+    }
+    
     return {...state, tables: [...state.tables, table], activeTableId: table.tableId}
   },
 
@@ -47,7 +58,10 @@ export default createReducer({
     const firstTable = state.tables[0];
     const tableIndex = getTableIndexById(state, tableId)
     state.tables.splice(tableIndex, 1)
-    return {...state, tables: [...state.tables], activeTableId: firstTable && firstTable.tableId }
+
+    const selectedFields = filter(state.selectedFields, item => item.tableId !== tableId)
+
+    return {...state, selectedFields, tables: [...state.tables], activeTableId: firstTable && firstTable.tableId }
   },
   renameTable(state, {tableId, name}) {
     const { table, tableIndex } = getTableAndIndexById(state, tableId)
@@ -77,6 +91,7 @@ export default createReducer({
 
     return getChangedFieldsState(state, tableIndex)
   },
+
   removeField(state, {tableId, fieldId}) {
     const { table, tableIndex } = getTableAndIndexById(state, tableId)
 
@@ -85,8 +100,28 @@ export default createReducer({
     forEach(table.rows, row => {
       delete row[fieldId]
     })
+    
+    const selectedFields = filter(state.selectedFields, 
+      item => item.tableId !== tableId && item.fieldId === fieldIndex)
+    
+    return { ...getChangedFieldsState(state, tableIndex), selectedFields}
+  },
 
-    return getChangedFieldsState(state, tableIndex)
+  selectField(state, {tableId, fieldId}) {
+    const item = {tableId, fieldId}
+    state.selectedFields.push(item)
+    return { ...state, selectedFields: [...state.selectedFields]}
+  },
+
+  deselectField(state, {tableId, fieldId}) {
+    const index = findIndex(state.selectedFields, 
+      item => item.tableId === tableId && item.fieldId === fieldId)
+    state.selectedFields.splice(index, 1)
+    return { ...state, selectedFields: [...state.selectedFields]}
+  },
+
+  resetSelectField(state){
+    return { ...state, selectedFields: [] }
   },
 
   setFieldPrimary(state, {tableId, fieldId}) {

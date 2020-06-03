@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { map, reduce } from 'lodash'
+import { some, map, reduce } from 'lodash'
 import { Menu, Dropdown } from 'antd';
 import { CaretDownOutlined, KeyOutlined } from '@ant-design/icons'
 import Row from '../../../components/Row'
@@ -44,8 +44,13 @@ export class Sheet extends React.Component{
     setFieldPrimaryAction(tableId, field.id)
   }
 
-  onSelectField = field => () => {
-
+  onSelectField = (field, selected) => () => {
+    const { table: { tableId }, selectFieldAction, deselectFieldAction} = this.props
+    if(selected) {
+      deselectFieldAction(tableId, field.id)
+    } else {
+      selectFieldAction(tableId, field.id)
+    }
   }
 
   getRowMenu = (rowId, index) => {
@@ -62,6 +67,9 @@ export class Sheet extends React.Component{
   }
 
   getFieldMenu(field, index) {
+    const { table: { tableId }, selectedFields } = this.props
+    const isSelectedMenu = some(selectedFields, 
+      item => item.tableId === tableId && item.fieldId === field.id)
     return (
       <Menu>
         <Menu.Item onClick={this.onShowAddFieldModal(field, index)}>
@@ -73,8 +81,8 @@ export class Sheet extends React.Component{
         <Menu.Item onClick={this.onPrivaryKey(field)}>
           <span>设置为主字段</span>
         </Menu.Item>
-        <Menu.Item onClick={this.onSelectField(field)}>
-          <span>选中</span>
+        <Menu.Item onClick={this.onSelectField(field, isSelectedMenu)}>
+          <span>{isSelectedMenu ? '取消选中' : '选中'}</span>
         </Menu.Item>
       </Menu>
     )
@@ -125,6 +133,7 @@ export class Sheet extends React.Component{
 
   render(){
     // const { table: { rows =[]} = {} } = this.props;
+    const { addFieldModalVisibility } = this.props
     return (
       <div className="sheet-wrapper">
         { this.renderHeader() }
@@ -134,15 +143,21 @@ export class Sheet extends React.Component{
             { this.renderRows() }
           </div>
         </div>
-        <AddFieldModal />
+        { addFieldModalVisibility && <AddFieldModal />}
       </div>
     )
   }
 }
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  selectedFields: state.sheets.selectedFields,
+  addFieldModalVisibility: state.sheets.addFieldModalVisibility,
+})
 const mapDispatchToProps = {
   addRowAction: actions.createRow,
   deleteRowAction: actions.deleteRow,
+
+  selectFieldAction: actions.selectField, 
+  deselectFieldAction: actions.deselectField,
 
   addFieldAction: actions.addField,
   removeFieldAction: actions.removeField,

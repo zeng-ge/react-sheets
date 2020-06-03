@@ -19,8 +19,9 @@ export class Sheets extends React.Component{
   }
 
   onSelectTab = tableId => () => {
-    const { activeTable } = this.props;
-    activeTable(tableId);
+    const { activeTable, resetSelectField } = this.props;
+    activeTable(tableId)
+    resetSelectField()
   }
 
   onOpenCreateTableModal = () => {
@@ -98,13 +99,18 @@ export class Sheets extends React.Component{
     )
   }
   render() {
-    const { activedTable = {} } = this.props;
+    const { 
+      activedTable = {},
+      createTableModalVisibility,
+      renameTableModalVisibility
+    } = this.props;
     return (
       <div className="sheets">
         { this.renderTabs() }
         { this.renderTable() }
-        <CreateTableModal title="建表"/>
-        <RenameTableModal title="修改表名" name={activedTable.tableName} />
+        { createTableModalVisibility && <CreateTableModal title="建表"/> }
+        { renameTableModalVisibility && 
+          <RenameTableModal title="修改表名" isUpdate={true} name={activedTable.tableName} />}
       </div>
     )
   }
@@ -112,7 +118,9 @@ export class Sheets extends React.Component{
 
 const mapStateToProps = state => ({ 
   tables: state.sheets.tables,
-  activedTable: currentTableSelector(state)
+  activedTable: currentTableSelector(state),
+  createTableModalVisibility: state.sheets.createTableModalVisibility,
+  renameTableModalVisibility: state.sheets.renameTableModalVisibility,
 })
 const mapDispatchToProps = actions
 

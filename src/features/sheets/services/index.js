@@ -1,5 +1,5 @@
-import { find, findIndex, forEach, cloneDeep } from 'lodash'
-import {tableId, columnId, rowId} from '../../../utils/uuid'
+import { cloneDeep, find, findIndex, forEach, map, reduce } from 'lodash'
+import { tableId as tableUUID, columnId, rowId} from '../../../utils/uuid'
 import tables from '../../../db'
 
 const getTableIndexById = tableId => findIndex(tables, item => item.tableId === tableId)
@@ -8,19 +8,76 @@ const getTableById = tableId => find(tables, item => item.tableId === tableId)
 
 const getItemIndexById = (items, id) => findIndex(items, item => item.id === id)
 
+const cloneFieldsAndRows = ({sourceTableId, primaryFieldId, fields}) => {
+  const sourceTable = getTableById(sourceTableId)
+  fields = map(fields, field => ({ ...field, primary: field.id === primaryFieldId }))
+  const rows = map(sourceTable.rows, row => {
+    return reduce(fields, (accumulator, field) => {
+      accumulator[field.id] = row[field.id]
+      return accumulator
+    }, { id: rowId() })
+  })
+  return { fields, rows }
+}
+
+export const mergeFieldsForReferenceTable = (referenceTableId, {sourceTableId, primaryFieldId, fields}) => {
+  const sourceTable = getTableById(sourceTableId)
+  const { fields: tableFields, rows} = sourceTable
+  const newFields = []
+  for(let index = 0, length = tableFields.length; index < length; index++) {
+    const field = tableFields[index]
+    const isFieldNotInReferenceTable = findIndex(fields, item => item.id === field.id) === -1
+    const isReferenceKey = field.id === primaryFieldId;
+    const shouldFieldKeep = isFieldNotInReferenceTable || isReferenceKey
+    if(shouldFieldKeep) {
+      const newField = { ...field }
+      if(isReferenceKey) {
+        field.reference = {
+          tableId: referenceTableId,
+          fieldId: primaryFieldId
+        }
+      }
+      newFields.push(newField)
+    }
+  }
+
+  sourceTable.fields = newFields;
+
+  sourceTable.rows = map(rows, row => {
+    return reduce(newFields, (accumulator, field) => {
+      accumulator[field.id] = row[field.id]
+      return accumulator
+    }, { id: row.id })
+  })
+  return sourceTable
+}
+
 export const loadTables = () => {
   return Promise.resolve(cloneDeep(tables))
 }
 
-export const createTable = name => {
+export const createTable = (name, options) => {
+  const tableId = tableUUID()
+  let fields = [
+    { id: columnId(), name: '名称', type: 'text', primary: true, width: 200 },
+    { id: columnId(), name: '描述', type: 'text', width: 200 },
+  ]
+  let rows = []
+
+  const isCreateReferenceTable = options.fields && options.fields.length > 0;
+  if(isCreateReferenceTable) {
+    const clonedFieldsRows = cloneFieldsAndRows(options)
+    fields = clonedFieldsRows.fields
+    rows = clonedFieldsRows.rows
+
+    mergeFieldsForReferenceTable(tableId, options)
+  }
+  
   const table = {
-    tableId: tableId(),
+    tableId,
     tableName: name,
-    fields: [
-      { id: 'column-1', name: '名称', type: 'text', primary: true, width: 200 },
-      { id: 'column-2', name: '描述', type: 'text', width: 200 },
-    ],
-    rows: []
+    fields,
+    rows
   }
   tables.push(table);
   return Promise.resolve(table);

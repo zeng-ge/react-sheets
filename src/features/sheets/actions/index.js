@@ -14,7 +14,7 @@ import {
 export default createActions({
   loadTables: () => ({ tables: loadTables() }),
 
-  createTable: name => ({table: createTable(name)}),
+  createTable: (name, options) => ({options, table: createTable(name, options)}),
   removeTable: tableId => ({tableId, removed: removeTable(tableId)}),
   renameTable: (tableId, name) => ({tableId, name, table: renameTable(tableId, name)}),
   
@@ -24,6 +24,9 @@ export default createActions({
   addField: (tableId, fieldOptions, fieldIndex) => ({tableId, fieldOptions, fieldIndex, field: addField(tableId, fieldOptions, fieldIndex)}),
   removeField: (tableId, fieldId) => ({tableId, fieldId, removed: removeField(tableId, fieldId)}),
   setFieldPrimary: (tableId, fieldId) => ({ tableId, fieldId, updated: setFieldPrimary(tableId, fieldId)}),
+  selectField: (tableId, fieldId) => ({tableId, fieldId}),
+  deselectField: (tableId, fieldId) => ({tableId, fieldId}),
+  resetSelectField: () => ({}),
 
   activeTable: tableId =>{
     return {tableId};

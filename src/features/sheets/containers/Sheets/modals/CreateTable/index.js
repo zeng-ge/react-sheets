@@ -1,14 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Modal } from 'antd'
+import { Modal, Select } from 'antd'
 import { trim } from 'lodash'
 import actions from '../../../../actions'
-import './index.scss'
+import { selectedFieldsSelector } from '../../../../selectors'
 
+const Option = Select.Option
 export class CreateTableModal extends React.Component{
   constructor(props){
-    super(props)
-    this.inputRef = null
+    super(props)  
+    this.inputRef = React.createRef()
+    this.state = { primaryFieldId: null }
+  }
+
+  onChangeField = fieldId => {
+    this.setState({ primaryFieldId: fieldId })
   }
 
   onCancel = () => {
@@ -17,15 +23,22 @@ export class CreateTableModal extends React.Component{
   }
 
   onOk = () => {
-    const { confirmAction, toggleModal, tableId } = this.props
-    const name = this.inputRef.value
+    const { confirmAction, toggleModal, isUpdate, tableId, selectedFields, resetSelectFieldAction } = this.props
+    const name = this.inputRef.current.value
     if(trim(name).length ===0) {
       return;
     }
-    if(tableId) {
+    if(isUpdate) {
       confirmAction(tableId, name)
     } else {
-      confirmAction(name)
+      const isCreateReferenceTable = selectedFields && selectedFields.length > 0
+      const { primaryFieldId } = this.state
+      if(isCreateReferenceTable && !primaryFieldId) {
+        return;
+      }
+      
+      confirmAction(name, { fields: selectedFields, sourceTableId: tableId, primaryFieldId })
+      resetSelectFieldAction()
     }
     toggleModal()
   }
@@ -37,9 +50,26 @@ export class CreateTableModal extends React.Component{
     }
   }
 
+  renderFields() {
+    const { selectedFields } = this.props
+    const { primaryFieldId } = this.state
+    return selectedFields && selectedFields.length > 0 && (
+      <div className="form-control">
+        <label className="field-label">主字段</label>
+        <Select value={primaryFieldId} onChange={this.onChangeField} placeholder="请选择">
+          {
+            selectedFields.map(item => {
+              return (<Option key={item.id} value={item.id}>{item.name}</Option>)
+            })
+          }
+        </Select>
+      </div>
+    )
+  }
+
   render() {
     const { visible, title, name } = this.props;
-    return visible && (
+    return (
       <Modal
         wrapClassName="create-table-modal"
         visible={visible} 
@@ -49,25 +79,24 @@ export class CreateTableModal extends React.Component{
         onCancel={this.onCancel}
         onOk={this.onOk}
         >
-          <label>
-            表名 <input defaultValue={name} ref={input => {
-                  this.inputRef = input
-                  input && input.focus()
-                }} 
-                onKeyUp={this.onEnter}/>
-          </label>
+          <div className="form-control">
+            <label className="field-label">表名 </label>
+            <input className="field-input" defaultValue={name} onKeyUp={this.onEnter}  ref={this.inputRef}/>
+          </div>
+          { this.renderFields() }
       </Modal>
     )
   }
 }
 
 const mapStateToProps = state => ({ 
+  tableId: state.sheets.activeTableId,
   visible: state.sheets.createTableModalVisibility,
-  
+  selectedFields: selectedFieldsSelector(state)
 })
 const mapDispatchToProps = {
   toggleModal: actions.toggleCreateTableModal,
-  confirmAction: actions.createTable
+  confirmAction: actions.createTable,
+  resetSelectFieldAction: actions.resetSelectField
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(CreateTableModal)
